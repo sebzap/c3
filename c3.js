@@ -6298,6 +6298,7 @@
       tooltip_format_title: undefined,
       tooltip_format_name: undefined,
       tooltip_format_value: undefined,
+      tooltip_horizontal: undefined,
       tooltip_position: undefined,
       tooltip_contents: function tooltip_contents(d, defaultTitleFormat, defaultValueFormat, color) {
         return this.getTooltipContent ? this.getTooltipContent(d, defaultTitleFormat, defaultValueFormat, color) : '';
@@ -7067,7 +7068,7 @@
     values.filter(function (v) {
       return v && !$$.isBarType(v.id);
     }).forEach(function (v) {
-      var d = $$.dist(v, pos);
+      var d = $$.config.tooltip_horizontal ? $$.horizontalDistance(v, pos) : $$.dist(v, pos);
 
       if (d < minDist) {
         minDist = d;
@@ -7085,6 +7086,14 @@
         y = $$.circleY(data, data.index),
         x = $$.x(data.x);
     return Math.sqrt(Math.pow(x - pos[xIndex], 2) + Math.pow(y - pos[yIndex], 2));
+  };
+
+  ChartInternal.prototype.horizontalDistance = function (data, pos) {
+    var $$ = this,
+        config = $$.config,
+        xIndex = config.axis_rotated ? 1 : 0,
+        x = $$.x(data.x);
+    return Math.abs(x - pos[xIndex]);
   };
 
   ChartInternal.prototype.convertValuesToStep = function (values) {
